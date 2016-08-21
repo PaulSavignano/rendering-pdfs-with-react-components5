@@ -4,6 +4,7 @@ import { ValidatedMethod } from 'meteor/mdg:validated-method'
 import { generateComponentAsPDF } from '../../../modules/server/generate-pdf'
 import { Documents } from '../documents'
 import { rateLimit } from '../../../modules/rate-limit'
+import { Document } from '../../../ui/components/document'
 
 export const downloadDocument = new ValidatedMethod({
   name: 'documents.downlaod',
@@ -14,7 +15,7 @@ export const downloadDocument = new ValidatedMethod({
     const document = Documents.findOne({ _id: documentId })
     const fileName = `document_${document._id}.pdf`
     return generateComponentAsPDF({
-      component: Document, 
+      component: Document,
       props: { document },
       fileName,
     })

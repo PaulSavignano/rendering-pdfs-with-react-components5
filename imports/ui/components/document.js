@@ -1,6 +1,10 @@
 import React from 'react'
 import InlineCss from 'react-inline-css'
 import { ListGroupItem, Button } from 'react-bootstrap'
+import fileSaver from 'file-saver'
+import { Meteor } from 'meteor/meteor'
+import { Bert } from 'meteor/themeteorchef:bert'
+import { base64ToBlob } from '../../modules/base64-to-blob'
 
 const removeDocument = (event) => {
   removeDocument.call({
@@ -10,7 +14,21 @@ const removeDocument = (event) => {
 
 const downloadPDF = (event) => {
   event.preventDefault()
-
+  const { target } = event
+  const documentId = target.getAttribute('data-id')
+  target.innerHTML = '<em>Downloading...</em>'
+  target.classList.add('downloading')
+  Meteor.call('documents.download', { documentId }, (error, response) => {
+    if (error) {
+      Bert.alert(error.reason, 'danger')
+    } else {
+      console.log(response)
+      const blob = base64ToBlob(response.base64)
+      fileSaver.saveAs(blob, response.fileName)
+      target.innerHTML = 'Download'
+      target.classList.remove('downloading')
+    }
+  })
 }
 
 export const Document = ({ document }) => (
