@@ -27,7 +27,9 @@ const generatePDF = (html, fileName) => {
       if (error) {
         module.reject(error)
       } else {
+        console.log(response)
         module.resolve({ fileName, base64: getBase64String(response.filename) })
+        fs.unlink(response.filename)
       }
     })
   } catch (exception) {
